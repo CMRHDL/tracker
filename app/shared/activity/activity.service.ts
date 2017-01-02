@@ -4,6 +4,7 @@ import "rxjs/add/operator/do";
 import "rxjs/add/operator/map";
 import {Activity} from "./activity";
 import {LogUtil} from "../../utils/log-util";
+import * as moment from 'moment';
 
 var Sqlite = require("nativescript-sqlite");
 var R = require("ramda");
@@ -13,15 +14,26 @@ export class ActivityService {
 
   private database: any;
 
+  readonly INSERT_ACTIVITIES = "INSERT INTO activities (activity, points) VALUES (?, ?)";
+  readonly INSERT_DAYS = "INSERT INTO days (day_milli, day, activity_id, done) VALUES (?, ?, ?, ?)";
+
+  createQueries: Array<string> = [
+    "CREATE TABLE IF NOT EXISTS activities (id INTEGER PRIMARY KEY AUTOINCREMENT, activity TEXT, points NUMBER)",
+    "CREATE TABLE IF NOT EXISTS days (id INTEGER PRIMARY KEY AUTOINCREMENT, day_milli NUMBER, day STRING, activity_id TEXT, done BOOLEAN)",
+  ];
+
   constructor() {
     (new Sqlite("activities.db")).then(db => {
-      db.execSQL("CREATE TABLE IF NOT EXISTS activities (id INTEGER PRIMARY KEY AUTOINCREMENT, activity TEXT, points NUMBER)").then(id => {
-        this.database = db;
-      }, LogUtil.log("CREATE TABLE ERROR"));
+      this.database = db;
+      this.initTable(this.createQueries);
     }, LogUtil.log("OPEN DB ERROR"));
   }
 
-  create = (activity: Activity) => this.database.execSQL("INSERT INTO activities (activity, points) VALUES (?, ?)", [activity.activity, activity.points]);
+  initTable = (arr: Array<string>) => {
+    if(arr.length) this.database.execSQL(arr.shift()).then(this.initTable(arr)).catch(LogUtil.log("CREATE TABLE ERROR"))
+  }
+
+  create = (activity: Activity) => this.database.execSQL(this.INSERT_ACTIVITIES, [activity.activity, activity.points]);
 
   fetch = () => this.database.all("SELECT * FROM activities");
 
@@ -36,4 +48,6 @@ export class ActivityService {
     i.push(this.buildEntity(c));
     return i;
   }, arr));
+
+  saveByDay = (activities: Array<Activity>) => activities.forEach(entry => this.database.execSQL(this.INSERT_DAYS, [+new Date(), moment(), entry.id, entry.done]));
 }

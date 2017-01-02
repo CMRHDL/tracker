@@ -1,5 +1,6 @@
 <ActionBar title="Enjoy">
   <ActionItem text="Refresh" (tap)="refresh()" android.systemIcon="ic_menu_refresh" ios.systemIcon="7" ios.position="right"></ActionItem>
+  <ActionItem text="Refresh" (tap)="wrapUpDay()" android.systemIcon="ic_menu_mark" ios.systemIcon="7" ios.position="right"></ActionItem>
 </ActionBar>
 
 <GridLayout rows="auto, *">
@@ -12,8 +13,8 @@
   <ListView [items]="day.activities" row="1">
     <template let-item="item" let-i="index">
       <GridLayout rows="auto,auto" columns="auto,*,auto">
-        <Switch row="index" col="0"></Switch>
-        <Label [text]="item.activity" row="index" col="1" class="margin-top-small"></Label>
+        <Switch [(ngModel)]="item.done" row="index" col="0"></Switch>
+        <Label [text]="item.activity" row="index" col="1" class="margin-top-small" (tap)="item.done = !item.done"></Label>
         <Label [text]="item.points" row="index" col="2" class="small-spacing margin-top-small"></Label>
       </GridLayout>
     </template>

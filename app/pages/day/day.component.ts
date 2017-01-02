@@ -40,6 +40,8 @@ export class DayComponent implements OnInit {
       .then(this.setActivities(this.day.activities));
   }
 
+  wrapUpDay = () => this.activityService.saveByDay(this.day.activities);
+
   setActivities = (arr) => (res) => arr = res;
 
 }
