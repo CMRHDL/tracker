@@ -1,0 +1,20 @@
+
+
+<GridLayout rows="auto, *">
+
+  <GridLayout row="0" columns="*, *, auto" class="add-bar">
+    <TextField [(ngModel)]="activity" hint="Create Activity" col="0"></TextField>
+    <TextField [(ngModel)]="points" hint="Value Activity" col="1"></TextField>
+    <Image src="res://add" (tap)="add(activity, points)" col="2"></Image>
+  </GridLayout>
+
+  <ListView [items]="day.activities" row="1">
+    <template let-item="item" let-i="index">
+      <GridLayout rows="auto,auto" columns="*,auto">
+        <Label [text]="item.activity" row="index" col="0" class="small-spacing margin-top-small"></Label>
+        <Label [text]="item.points" row="index" col="1" class="small-spacing margin-top-small"></Label>
+      </GridLayout>
+    </template>
+  </ListView>
+
+</GridLayout>
