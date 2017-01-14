@@ -2,7 +2,7 @@ var R = require("ramda");
 
 export class Util {
 
-  static max = (arr: Array<any>, prop: string) => arr.map(entry => entry[prop]).reduce(R.max, 0);
+  static max = (arr: Array<any>, prop: string) => arr.map(R.path(prop.split('.'))).reduce(R.max, 0);
 
   // LoDash
   // static max = (arr: Array<any>, prop: string) => _.max(arr.map(entry => entry[prop])) || 0;

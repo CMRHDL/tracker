@@ -3,7 +3,7 @@ import {Activity} from "../../shared/activity/activity";
 import {ActivityService} from "../../shared/activity/activity.service";
 import {ValidationUtil} from "../../utils/validation-util";
 import {LogUtil} from "../../utils/log-util";
-import {Day} from "../../shared/day";
+import {Day} from "../../shared/day/day";
 
 var R = require("ramda");
 

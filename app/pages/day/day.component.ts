@@ -1,11 +1,13 @@
 import {Router} from "@angular/router";
 import {Page} from "ui/page";
 import {Component, OnInit, ChangeDetectionStrategy} from "@angular/core";
-import {Day} from "../../shared/day";
+import {Day} from "../../shared/day/day";
 import {Activity} from "../../shared/activity/activity";
 import {ActivityService} from "../../shared/activity/activity.service";
 import {LogUtil} from "../../utils/log-util";
 import {Util} from "../../utils/util";
+import * as moment from "moment";
+import {DayService} from "../../shared/day/day.service";
 
 var R = require("ramda");
 
@@ -20,10 +22,11 @@ export class DayComponent implements OnInit {
 
   day: Day = new Day();
 
-  constructor(private router: Router, private page: Page, private activityService: ActivityService) {
+  constructor(private router: Router, private page: Page, private activityService: ActivityService, private dayService: DayService) {
   }
 
   ngOnInit() {
+    moment.locale('de');
     this.day.activities = [];
     this.activityService.fetch()
       .then(this.activityService.createList(this.day.activities))
@@ -40,7 +43,7 @@ export class DayComponent implements OnInit {
       .then(this.setActivities(this.day.activities));
   }
 
-  wrapUpDay = () => this.activityService.saveByDay(this.day.activities);
+  wrapUpDay = () => this.dayService.saveDay(this.day.activities);
 
   setActivities = (arr) => (res) => arr = res;
 
